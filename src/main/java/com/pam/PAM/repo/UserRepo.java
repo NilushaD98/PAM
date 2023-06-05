@@ -19,4 +19,7 @@ public interface UserRepo extends MongoRepository<ApplicationUser,String> {
     String deleteByUsernameEquals(String username);
 //    @Query(value = "{role:'?0'}",fields = "{'username': 1,'password': 1}")
 //    List<ApplicationUser> findAll(String admin);
+
+    @Query(value = "{}", fields = "{ 'username' : 1 }")
+    List<ApplicationUser> findAllUsernames();
 }

@@ -1,5 +1,6 @@
 package com.pam.PAM.service;
 
+import com.pam.PAM.dto.ApplicationUserDTO;
 import com.pam.PAM.dto.request.RequestAddUserDTO;
 import com.pam.PAM.model.ApplicationUser;
 
@@ -13,6 +14,6 @@ public interface AdminService {
 
    ApplicationUser findByUsername(String username);
     ApplicationUser findUserByUserEmail(String email);
-//    String updateUser(RequestAddUserDTO requestAddUserDTO);
+    String updateUser(ApplicationUserDTO requestAddUserDTO);
     String deleteUser(String username);
 }

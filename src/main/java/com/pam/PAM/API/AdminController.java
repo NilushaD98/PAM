@@ -1,10 +1,10 @@
 package com.pam.PAM.API;
 
+import com.pam.PAM.dto.ApplicationUserDTO;
 import com.pam.PAM.dto.request.RequestAddUserDTO;
 import com.pam.PAM.model.ApplicationUser;
 import com.pam.PAM.service.AdminService;
 import com.pam.PAM.util.StandardResponse;
-import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,11 @@ public class AdminController {
     @PostMapping("addUser")
     public ResponseEntity<?> addUser(@RequestBody RequestAddUserDTO requestAddUserDTO){
         String saveStatus = adminService.addUser(requestAddUserDTO);
-        return null;
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(HttpStatus.CREATED.value(),"Saved Status : ", saveStatus ),HttpStatus.CREATED
+        );
     }
+
     @GetMapping("getAll")
     public ResponseEntity<?> getAll(){
         List<ApplicationUser> allUsers = adminService.findAllUsers();
@@ -47,13 +50,7 @@ public class AdminController {
                 adminService.findUserByUserEmail(email),HttpStatus.ACCEPTED
         );
     }
-//
-//    @PutMapping("updateUser")
-//    public ResponseEntity<?> updateUser(@RequestBody RequestAddUserDTO requestAddUserDTO){
-//        return new ResponseEntity<>(
-//                adminService.updateUser(requestAddUserDTO),HttpStatus.ACCEPTED
-//        );
-//    }
+
     @DeleteMapping(
             path="deleteByUsername",
             params = "username"
@@ -61,6 +58,13 @@ public class AdminController {
     public ResponseEntity<?> deleteUserByName(@RequestParam(value ="username") String username){
         return new ResponseEntity<>(
                 adminService.deleteUser(username),HttpStatus.ACCEPTED
+        );
+    }
+    @PutMapping("userUpdate")
+    public ResponseEntity<StandardResponse> userUpdate(@RequestBody ApplicationUserDTO applicationUserDTO){
+        String updatedStatus = adminService.updateUser(applicationUserDTO);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"Update Status: ", updatedStatus),HttpStatus.OK
         );
     }
 }
