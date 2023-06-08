@@ -3,21 +3,30 @@ package com.pam.PAM.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 
 @AllArgsConstructor@NoArgsConstructor@Data
-@Document(collection = "applicationUsers")
+@Entity
 public class ApplicationUser {
 
     @Id
-    private String userID;
-    @Indexed(unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long userID;
     private String username;
     private String password;
-    @Indexed(unique = true)
     private String email;
     private String role;
+    private String nic;
 
+    public ApplicationUser(String username, String password, String email, String role, String nic) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.nic = nic;
+    }
 }

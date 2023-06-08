@@ -1,0 +1,66 @@
+package com.pam.PAM.config;
+
+import com.pam.PAM.model.ApplicationUser;
+import com.pam.PAM.repo.UserRepo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+
+@Configuration
+@RequiredArgsConstructor
+public class ApplicationConfig {
+    private final UserRepo repository;
+
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+     return new UserDetailsService() {
+         @Override
+         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+             ApplicationUser applicationUser = repository.findApplicationUserByUsernameEquals(username);
+             System.out.println(2);
+             if(applicationUser ==null){
+                 throw new UsernameNotFoundException("username not found");
+             }
+             Collection<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+             System.out.println(simpleGrantedAuthorities);
+             simpleGrantedAuthorities.add(new SimpleGrantedAuthority(applicationUser.getRole()));
+             System.out.println(simpleGrantedAuthorities);
+             return new User(
+                     applicationUser.getUsername(),
+                     applicationUser.getPassword(),
+                     simpleGrantedAuthorities
+             );
+         }
+     };
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+}
