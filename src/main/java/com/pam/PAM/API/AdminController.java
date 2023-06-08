@@ -1,19 +1,23 @@
 package com.pam.PAM.API;
 
 import com.pam.PAM.dto.ApplicationUserDTO;
+import com.pam.PAM.dto.MachineDTO;
 import com.pam.PAM.dto.request.RequestAddUserDTO;
+import com.pam.PAM.dto.request.RequestMachineAddDTO;
 import com.pam.PAM.model.ApplicationUser;
+import com.pam.PAM.model.Machines;
 import com.pam.PAM.service.AdminService;
 import com.pam.PAM.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/admin")
+@RequestMapping("/api/v1/admin/")
 public class AdminController {
 
     @Autowired
@@ -34,6 +38,7 @@ public class AdminController {
                 allUsers, HttpStatus.OK
         );
     }
+
     @GetMapping(
             path="getByUsername",
             params = "username"
@@ -44,6 +49,7 @@ public class AdminController {
                 byUsername,HttpStatus.ACCEPTED
         );
     }
+
     @GetMapping(path="getByUserEmail",params = "email")
     public ResponseEntity<?> getUserByEmail(@RequestParam(value = "email") String email){
         return new ResponseEntity<>(
@@ -65,6 +71,41 @@ public class AdminController {
         String updatedStatus = adminService.updateUser(applicationUserDTO);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(200,"Update Status: ", updatedStatus),HttpStatus.OK
+        );
+    }
+
+    @PostMapping("addMachine")
+    public ResponseEntity<StandardResponse> addMachine(@RequestBody RequestMachineAddDTO requestMachineAddDTO){
+        String savedStatus = adminService.addMachine(requestMachineAddDTO);
+        return new ResponseEntity<>(
+                new StandardResponse(HttpStatus.CREATED.value(), "Machine Saved Status; ", savedStatus),HttpStatus.CREATED
+        );
+    }
+
+    @GetMapping("getAllMachines")
+    public ResponseEntity<StandardResponse> getAllMachines(){
+        List<Machines> machineDTOSList = adminService.getAllMachines();
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"All Users :",machineDTOSList),HttpStatus.OK
+        );
+    }
+
+    @PutMapping("updateMachineById")
+    public ResponseEntity<StandardResponse> updateMachine(@RequestBody MachineDTO machineDTO){
+        String updateStatus = adminService.updateMAchine(machineDTO);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(HttpStatus.ACCEPTED.value(), "Upadted Status",updateStatus),HttpStatus.ACCEPTED
+        );
+    }
+
+    @DeleteMapping(
+            value = "deleteMachine",
+            params = "machineID"
+    )
+    public ResponseEntity<StandardResponse> deleteMachineById(@RequestParam (value = "machineID") String machineID){
+        String deleteStatus= adminService.deleteMAchineByID(machineID);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(HttpStatus.OK.value(),"MAchine Delete Status: ",deleteStatus),HttpStatus.OK
         );
     }
 }

@@ -1,20 +1,29 @@
 package com.pam.PAM.model;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @AllArgsConstructor@NoArgsConstructor@Data
-@Document(collection = "machines")
+@Entity
 public class Machines {
     @Id
-    private String machineID;
-    @Indexed(unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int machineID;
     private String machineIP;
+    private String machineName;
     private String username;
     private String password;
     private String oSystem;
+
+    public Machines(String machineIP, String machineName, String username, String password, String oSystem) {
+        this.machineIP = machineIP;
+        this.machineName = machineName;
+        this.username = username;
+        this.password = password;
+        this.oSystem = oSystem;
+    }
 }
