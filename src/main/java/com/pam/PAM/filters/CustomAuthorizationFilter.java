@@ -5,8 +5,10 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pam.PAM.model.ApplicatioUserMongo;
 import com.pam.PAM.model.ApplicationUser;
 import com.pam.PAM.repo.UserRepo;
+import com.pam.PAM.repo.UserRepoMongo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 import static java.util.Arrays.stream;
@@ -39,6 +38,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     private final UserRepo userRepo;
+    private final UserRepoMongo userRepoMongo;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if(request.getServletPath().equals("/api/v1/auth/authenticate") || request.getServletPath().equals("/api/token/refresh")){
@@ -54,7 +54,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     DecodedJWT decodedJWT  = jwtVerifier.verify(token);
                     String username = decodedJWT.getSubject();
                     Collection<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-                    ApplicationUser applicationUser = userRepo.findApplicationUserByUsernameEquals(username);
+                    List<ApplicatioUserMongo> byUserName = userRepoMongo.findByUserName(username);
+                    ApplicatioUserMongo applicationUser = byUserName.get(0);
                     simpleGrantedAuthorities.add(new SimpleGrantedAuthority(applicationUser.getRole()));
                     System.out.println(simpleGrantedAuthorities);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =

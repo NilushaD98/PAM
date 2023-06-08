@@ -1,7 +1,9 @@
 package com.pam.PAM.config;
 
+import com.pam.PAM.model.ApplicatioUserMongo;
 import com.pam.PAM.model.ApplicationUser;
 import com.pam.PAM.repo.UserRepo;
+import com.pam.PAM.repo.UserRepoMongo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +21,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
     private final UserRepo repository;
+    private final UserRepoMongo userRepoMongo;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -33,15 +37,14 @@ public class ApplicationConfig {
      return new UserDetailsService() {
          @Override
          public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-             ApplicationUser applicationUser = repository.findApplicationUserByUsernameEquals(username);
-             System.out.println(2);
+             List<ApplicatioUserMongo> applicationUserw = userRepoMongo.findByUserName(username);
+             ApplicatioUserMongo applicationUser = applicationUserw.get(0);
+//             ApplicationUser applicationUser = repository.findApplicationUserByUsernameEquals(username);
              if(applicationUser ==null){
                  throw new UsernameNotFoundException("username not found");
              }
              Collection<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-             System.out.println(simpleGrantedAuthorities);
              simpleGrantedAuthorities.add(new SimpleGrantedAuthority(applicationUser.getRole()));
-             System.out.println(simpleGrantedAuthorities);
              return new User(
                      applicationUser.getUsername(),
                      applicationUser.getPassword(),

@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.pam.PAM.dto.request.RequestAuthenticateDTO;
 import com.pam.PAM.dto.response.ResponseAuthenticateSucessDTO;
+import com.pam.PAM.model.ApplicatioUserMongo;
 import com.pam.PAM.model.ApplicationUser;
 import com.pam.PAM.repo.UserRepo;
+import com.pam.PAM.repo.UserRepoMongo;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +34,7 @@ public class AuthenticateService {
     private final UserRepo repository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserRepoMongo userRepoMongo;
 
     public ResponseAuthenticateSucessDTO authenticate(RequestAuthenticateDTO request) {
         System.out.println(1);
@@ -43,7 +47,8 @@ public class AuthenticateService {
         System.out.println(2);
 
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-        ApplicationUser applicationUser = repository.findApplicationUserByUsernameEquals(request.getUsername());
+        List<ApplicatioUserMongo> byUserName = userRepoMongo.findByUserName(request.getUsername());
+        ApplicatioUserMongo applicationUser = byUserName.get(0);
 
         String access_token = JWT.create()
                 .withSubject(applicationUser.getUsername())
