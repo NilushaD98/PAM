@@ -4,24 +4,27 @@ import com.pam.PAM.dto.ApplicationUserDTO;
 import com.pam.PAM.dto.MachineDTO;
 import com.pam.PAM.dto.request.RequestAddUserDTO;
 import com.pam.PAM.dto.request.RequestMachineAddDTO;
-import com.pam.PAM.model.ApplicationUser;
-import com.pam.PAM.model.Machines;
+import com.pam.PAM.model.ApplicatioUserMongo;
+import com.pam.PAM.model.Machinemongo;
 import com.pam.PAM.service.AdminService;
 import com.pam.PAM.util.StandardResponse;
+import com.pam.PAM.util.mappers.MachineMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/")
+@CrossOrigin(origins = "*",methods = {RequestMethod.PUT,RequestMethod.DELETE,RequestMethod.GET,RequestMethod.POST})
 public class AdminController {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    MachineMapper machineMapper;
 
     @PostMapping("addUser")
     public ResponseEntity<?> addUser(@RequestBody RequestAddUserDTO requestAddUserDTO){
@@ -33,7 +36,7 @@ public class AdminController {
 
     @GetMapping("getAll")
     public ResponseEntity<?> getAll(){
-        List<ApplicationUser> allUsers = adminService.findAllUsers();
+        List<ApplicatioUserMongo> allUsers = adminService.findAllUsers();
         return new ResponseEntity<>(
                 allUsers, HttpStatus.OK
         );
@@ -44,26 +47,20 @@ public class AdminController {
             params = "username"
     )
     public ResponseEntity<?> getUserByName(@RequestParam(value ="username") String username){
-        ApplicationUser byUsername = adminService.findByUsername(username);
+        List<ApplicatioUserMongo> byUsername = adminService.findByUsername(username);
         return new ResponseEntity<>(
                 byUsername,HttpStatus.ACCEPTED
         );
     }
 
-    @GetMapping(path="getByUserEmail",params = "email")
-    public ResponseEntity<?> getUserByEmail(@RequestParam(value = "email") String email){
-        return new ResponseEntity<>(
-                adminService.findUserByUserEmail(email),HttpStatus.ACCEPTED
-        );
-    }
 
     @DeleteMapping(
-            path="deleteByUsername",
-            params = "username"
+            path="deleteByUserId",
+            params = "userID"
     )
-    public ResponseEntity<?> deleteUserByName(@RequestParam(value ="username") String username){
+    public ResponseEntity<?> deleteBYuserID(@RequestParam(value ="userID") String userID){
         return new ResponseEntity<>(
-                adminService.deleteUser(username),HttpStatus.ACCEPTED
+                adminService.deleteUser(userID),HttpStatus.ACCEPTED
         );
     }
     @PutMapping("userUpdate")
@@ -84,7 +81,7 @@ public class AdminController {
 
     @GetMapping("getAllMachines")
     public ResponseEntity<StandardResponse> getAllMachines(){
-        List<Machines> machineDTOSList = adminService.getAllMachines();
+        List<Machinemongo> machineDTOSList = adminService.getAllMachines();
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(200,"All Users :",machineDTOSList),HttpStatus.OK
         );
@@ -100,10 +97,10 @@ public class AdminController {
 
     @DeleteMapping(
             value = "deleteMachine",
-            params = "machineID"
+            params = "machineId"
     )
-    public ResponseEntity<StandardResponse> deleteMachineById(@RequestParam (value = "machineID") String machineID){
-        String deleteStatus= adminService.deleteMAchineByID(machineID);
+    public ResponseEntity<StandardResponse> deleteMachineById(@RequestParam (value = "machineId") String machineId){
+        String deleteStatus= adminService.deleteMAchineByID(machineId);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(HttpStatus.OK.value(),"MAchine Delete Status: ",deleteStatus),HttpStatus.OK
         );

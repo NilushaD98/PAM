@@ -14,5 +14,6 @@ public class MachineDTO {
     private String machineName;
     private String username;
     private String password;
-    private String oSystem;
+    private String machineOS;
+
 }

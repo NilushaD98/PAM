@@ -36,15 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.
                 csrf().disable()
+                .cors().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/**","/api/token/refresh").permitAll()
+                .antMatchers("/api/v1/auth/**","/api/token/refresh","/api/v1/users/**").permitAll()
                 .antMatchers("/api/v1/admin/**")
                 .hasAuthority("ADMIN")
-                .antMatchers("api/v1/users/**")
-                .hasAuthority("USER")
                 .anyRequest()
                 .authenticated()
                 .and()

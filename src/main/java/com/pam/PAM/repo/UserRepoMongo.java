@@ -14,4 +14,6 @@ public interface UserRepoMongo extends MongoRepository<ApplicatioUserMongo,Strin
     @Query(value = "{ 'username' : '?0' }" )
     List<ApplicatioUserMongo> findByUserName(String username);
 
+    @Query(value = "{'username': '?0'}")
+    String deleteApplicationUserByUsernameEquals(String username);
 }

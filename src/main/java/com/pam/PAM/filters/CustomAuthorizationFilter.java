@@ -57,10 +57,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     List<ApplicatioUserMongo> byUserName = userRepoMongo.findByUserName(username);
                     ApplicatioUserMongo applicationUser = byUserName.get(0);
                     simpleGrantedAuthorities.add(new SimpleGrantedAuthority(applicationUser.getRole()));
-                    System.out.println(simpleGrantedAuthorities);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                             new UsernamePasswordAuthenticationToken(username,null,simpleGrantedAuthorities);
-                    System.out.println(usernamePasswordAuthenticationToken);
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     filterChain.doFilter(request,response);}
                 catch (Exception exception) {

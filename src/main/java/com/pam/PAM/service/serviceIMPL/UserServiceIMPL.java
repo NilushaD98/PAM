@@ -2,10 +2,14 @@ package com.pam.PAM.service.serviceIMPL;
 
 import com.pam.PAM.dto.response.ResponseMachineNameDTO;
 import com.pam.PAM.dto.response.ResponseUsernamesDTO;
+import com.pam.PAM.model.ApplicatioUserMongo;
 import com.pam.PAM.model.ApplicationUser;
+import com.pam.PAM.model.Machinemongo;
 import com.pam.PAM.model.Machines;
 import com.pam.PAM.repo.MachineRepo;
+import com.pam.PAM.repo.MachineRepoMongo;
 import com.pam.PAM.repo.UserRepo;
+import com.pam.PAM.repo.UserRepoMongo;
 import com.pam.PAM.service.UserService;
 import com.pam.PAM.util.mappers.MachineMapper;
 import com.pam.PAM.util.mappers.UserMapper;
@@ -26,22 +30,28 @@ public class UserServiceIMPL implements UserService{
     @Autowired
     private UserRepo userRepo;
     @Autowired
-    private UserMapper userMapper;
-    @Autowired
     private MachineRepo machineRepo;
     @Autowired
+    private UserMapper userMapper;
+    @Autowired
     private MachineMapper machineMapper;
+    @Autowired
+    private UserRepoMongo userRepoMongo;
+    @Autowired
+    private MachineRepoMongo machineRepoMongo;
     public List<ResponseUsernamesDTO> findAllUsernames(){
+        List<ApplicatioUserMongo> applicatioUserMongos = userRepoMongo.findAll();
+
+        return userMapper.EntityToDTOMongo(applicatioUserMongos);
 //        List<ApplicationUser> allUsernames = userRepo.findAllUsernames();
 //        return userMapper.EntityToDTO(allUsernames);
-return null;
     }
-
     @Override
     public List<ResponseMachineNameDTO> findMachineName() {
+        List<Machinemongo> all = machineRepoMongo.findAll();
+        return machineMapper.EntityToDTOMongoDB(all);
 //        List<Machines> machinesList = machineRepo.findAllMachines();
 //        return machineMapper.EntityToDTO(machinesList);
-        return null;
     }
 
 //    @Override
