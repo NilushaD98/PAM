@@ -33,4 +33,8 @@ public class UserController {
                 new StandardResponse(200,"List of All Machines: ",responseMachineNameDTOList),HttpStatus.OK
         );
     }
+    @GetMapping ("getName")
+    private String getName(){
+        return "My name";
+    }
 }

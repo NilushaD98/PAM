@@ -1,6 +1,7 @@
 package com.pam.PAM.repo;
 
 
+import com.pam.PAM.model.ApplicatioUserMongo;
 import com.pam.PAM.model.Machinemongo;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
