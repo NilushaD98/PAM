@@ -1,8 +1,6 @@
 package com.pam.PAM.config;
 
 import com.pam.PAM.model.ApplicatioUserMongo;
-import com.pam.PAM.model.ApplicationUser;
-import com.pam.PAM.repo.UserRepo;
 import com.pam.PAM.repo.UserRepoMongo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,12 +19,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UserRepo repository;
     private final UserRepoMongo userRepoMongo;
 
     private final BCryptPasswordEncoder passwordEncoder;

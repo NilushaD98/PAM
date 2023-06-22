@@ -1,11 +1,9 @@
 package com.pam.PAM.config;
 
-import com.pam.PAM.filters.CustomAuthenticationFilter;
+
 import com.pam.PAM.filters.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
