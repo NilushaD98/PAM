@@ -8,6 +8,4 @@ import lombok.NoArgsConstructor;
 public class RequestAuthenticateDTO {
     private String username;
     private String password;
-    private String nic;
-    private String machineName;
 }

@@ -3,8 +3,10 @@ package com.pam.PAM.filters;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pam.PAM.exceptions.BadAttributeCredential;
 import com.pam.PAM.model.ApplicatioUserMongo;
 import com.pam.PAM.repo.UserRepoMongo;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +37,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     private final UserRepoMongo userRepoMongo;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/api/v1/auth/authenticate") || request.getServletPath().equals("/api/token/refresh")){
+        if(request.getServletPath().equals("/api/v1/auth/authenticate") || request.getServletPath().equals("/logout")){
             filterChain.doFilter(request,response);
         }else{
             String authorizationHeader = request.getHeader(AUTHORIZATION);
@@ -47,14 +49,21 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     JWTVerifier jwtVerifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT  = jwtVerifier.verify(token);
                     String username = decodedJWT.getSubject();
+                    String nic = String.valueOf(decodedJWT.getClaim("nic")).replaceAll("\"","");
                     Collection<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
                     List<ApplicatioUserMongo> byUserName = userRepoMongo.findByUserName(username);
                     ApplicatioUserMongo applicationUser = byUserName.get(0);
-                    simpleGrantedAuthorities.add(new SimpleGrantedAuthority(applicationUser.getRole()));
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(username,null,simpleGrantedAuthorities);
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    filterChain.doFilter(request,response);}
+                    if(nic.equals(applicationUser.getNic())){
+                        simpleGrantedAuthorities.add(new SimpleGrantedAuthority(applicationUser.getRole()));
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                                new UsernamePasswordAuthenticationToken(username,null,simpleGrantedAuthorities);
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                        filterChain.doFilter(request,response);
+                    }else {
+                        throw new BadAttributeCredential();
+                    }
+
+                }
                 catch (Exception exception) {
                     log.error("Error login : {}", exception.getMessage());
                     response.setHeader("error", exception.getMessage());

@@ -1,7 +1,9 @@
 package com.pam.PAM.service.serviceIMPL;
 
+import com.pam.PAM.dto.MachineDTO;
 import com.pam.PAM.dto.response.ResponseMachineNameDTO;
 import com.pam.PAM.dto.response.ResponseUsernamesDTO;
+import com.pam.PAM.exceptions.MachineNotFoundExcepyion;
 import com.pam.PAM.model.ApplicatioUserMongo;
 import com.pam.PAM.model.Machinemongo;
 import com.pam.PAM.repo.MachineRepoMongo;
@@ -29,28 +31,23 @@ public class UserServiceIMPL implements UserService{
         List<ApplicatioUserMongo> applicatioUserMongos = userRepoMongo.findAll();
 
         return userMapper.EntityToDTOMongo(applicatioUserMongos);
-//        List<ApplicationUser> allUsernames = userRepo.findAllUsernames();
-//        return userMapper.EntityToDTO(allUsernames);
     }
     @Override
     public List<ResponseMachineNameDTO> findMachineName() {
         List<Machinemongo> all = machineRepoMongo.findAll();
         return machineMapper.EntityToDTOMongoDB(all);
-//        List<Machines> machinesList = machineRepo.findAllMachines();
-//        return machineMapper.EntityToDTO(machinesList);
     }
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//
-//        List<ApplicationUser> byUsername = userRepo.findByUsername(username);
-//        ApplicationUser applicationUser = byUsername.get(0);
-//        if(applicationUser==null){
-//            throw new UsernameNotFoundException("User Not in database");
-//        }else {
-//            Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//            authorities.add(new SimpleGrantedAuthority(applicationUser.getRole()));
-//            return new User(applicationUser.getUsername(),applicationUser.getPassword(),authorities);
-//        }
-//    }
+    @Override
+    public MachineDTO findMachineByName(String machineName) {
+        List<Machinemongo> byMachinename = machineRepoMongo.findByMachinename(machineName);
+        if(byMachinename.isEmpty()){
+            throw new MachineNotFoundExcepyion();
+        }else {
+            Machinemongo machinemongo = byMachinename.get(0);
+            return machineMapper.DocumentToDTO(machinemongo);
+        }
+    }
+
+
 }

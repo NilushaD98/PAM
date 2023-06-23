@@ -11,9 +11,5 @@ import lombok.NoArgsConstructor;
 public class ResponseAuthenticateSucessDTO {
     private String redirect_status;
     private String access_token;
-    private String machineIP;
-    private String machineUsername;
-    private String machinePassword;
-    private String oSystem;
 
 }

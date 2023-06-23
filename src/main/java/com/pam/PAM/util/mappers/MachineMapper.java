@@ -12,5 +12,6 @@ import java.util.List;
 public interface MachineMapper {
     List<ResponseMachineNameDTO> EntityToDTOMongoDB(List<Machinemongo> all);
 
-    List<MachineDTO> EntityListToDTOList(List<ApplicatioUserMongo> allUsers);
+
+    MachineDTO DocumentToDTO(Machinemongo machinemongo);
 }
