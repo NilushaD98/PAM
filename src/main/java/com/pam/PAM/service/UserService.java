@@ -1,5 +1,6 @@
 package com.pam.PAM.service;
 
+import com.pam.PAM.dto.MachineDTO;
 import com.pam.PAM.dto.response.ResponseMachineNameDTO;
 import com.pam.PAM.dto.response.ResponseUsernamesDTO;
 
@@ -9,4 +10,6 @@ public interface UserService {
     public List<ResponseUsernamesDTO> findAllUsernames();
 
     List<ResponseMachineNameDTO> findMachineName();
+
+    MachineDTO findMachineByName(String machineName);
 }

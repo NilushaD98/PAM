@@ -23,20 +23,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AuthenticateService {
-    private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserRepoMongo userRepoMongo;
-    private  final MachineRepoMongo machineRepoMongo;
 
     public ResponseAuthenticateSucessDTO authenticate(RequestAuthenticateDTO request) {
         List<ApplicatioUserMongo> byUserName = userRepoMongo.findByUserName(request.getUsername());
-        System.out.println(request);
-        List<Machinemongo> byMachinename = machineRepoMongo.findByMachinename(request.getMachineName());
-        System.out.println(byMachinename);
-
-        if(
-                passwordEncoder.matches(request.getNic(),userRepoMongo.findByUserName(request.getUsername()).get(0).getNic())
-        ){
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getUsername(),
@@ -56,26 +47,13 @@ public class AuthenticateService {
 
                 return new ResponseAuthenticateSucessDTO(
                         "0",
-                        access_token,
-                        byMachinename.get(0).getMachineIP(),
-                        byMachinename.get(0).getUsername(),
-                        byMachinename.get(0).getPassword(),
-                        byMachinename.get(0).getMachineOS()
+                        access_token
                 );
             }else {
                 return new ResponseAuthenticateSucessDTO(
                         "1",
-                        access_token,
-                        null,
-                        null,
-                        null,
-                        null
+                        access_token
                 );
             }
-        }else {
-            throw  new BadAttributeCredential();
-        }
-
     }
-
 }
